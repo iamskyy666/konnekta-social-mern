@@ -7,12 +7,15 @@ import ConnectionsPage from "./pages/ConnectionsPage";
 import DiscoverPage from "./pages/DiscoverPage";
 import ProfilePage from "./pages/ProfilePage";
 import CreatePostPage from "./pages/CreatePostPage";
+import Layout from "./pages/Layout";
+import { useUser } from "@clerk/react";
 
 function App() {
+  const { user } = useUser();
   return (
     <>
       <Routes>
-        <Route path="/" element={<LoginPage />}>
+        <Route path="/" element={!user ? <LoginPage /> : <Layout />}>
           <Route index element={<FeedPage />} />
           <Route path="messages" element={<MessagesPage />} />
           <Route path="messages/:userId" element={<ChatBoxPage />} />
