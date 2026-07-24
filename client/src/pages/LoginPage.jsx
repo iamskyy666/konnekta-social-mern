@@ -2,6 +2,8 @@ import { Star } from "lucide-react";
 import { assets } from "../assets/assets";
 import { SignIn } from "@clerk/react";
 
+// display this page if user is not logged-in
+
 function LoginPage() {
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
