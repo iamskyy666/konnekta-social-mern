@@ -14,19 +14,19 @@ export default function Layout() {
 
   return user ? (
     <div className="w-full flex h-screen">
-      <SideBar />
-      {/* RIGHT SIDE DIV */}
-      <div className="flex-1 bg-slate-500">
+      <SideBar sideBarOpen={sideBarOpen} setSideBarOpen={setSideBarOpen} />
+      {/* RIGHT-SIDE DIV */}
+      <div className="flex-1 bg-slate-50">
         <Outlet />
       </div>
       {sideBarOpen ? (
         <X
-          className="absolute top-3 right-3 p-2 z-100 bg-white rounded-md sgadow w-10 h-10 text-gray-600 sm:hidden"
+          className="absolute top-3 right-3 p-2 z-100 bg-white rounded-md shadow w-10 h-10 text-gray-600 sm:hidden"
           onClick={() => setSideBarOpen(false)}
         />
       ) : (
         <Menu
-          className="absolute top-3 right-3 p-2 z-100 bg-white rounded-md sgadow w-10 h-10 text-gray-600 sm:hidden"
+          className="absolute top-3 right-3 p-2 z-100 bg-white rounded-md shadow w-10 h-10 text-gray-600 sm:hidden"
           onClick={() => setSideBarOpen(true)}
         />
       )}
