@@ -9,11 +9,13 @@ import ProfilePage from "./pages/ProfilePage";
 import CreatePostPage from "./pages/CreatePostPage";
 import Layout from "./pages/Layout";
 import { useUser } from "@clerk/react";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const { user } = useUser();
   return (
     <>
+      <Toaster />
       <Routes>
         <Route path="/" element={!user ? <LoginPage /> : <Layout />}>
           <Route index element={<FeedPage />} />
@@ -31,3 +33,5 @@ function App() {
 }
 
 export default App;
+
+// 02:08:10
