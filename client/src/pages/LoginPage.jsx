@@ -60,5 +60,4 @@ function LoginPage() {
 
 export default LoginPage;
 
-//38:00 ⏱️
 
