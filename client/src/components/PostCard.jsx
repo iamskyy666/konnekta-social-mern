@@ -2,6 +2,7 @@ import { BadgeCheck, Heart, MessageCircle, Share2 } from "lucide-react";
 import moment from "moment";
 import { useState } from "react";
 import { dummyUserData } from "../assets/assets";
+import { useNavigate } from "react-router-dom";
 
 const PostCard = ({ post }) => {
   const [likes, setLikes] = useState(post.likes_count);
@@ -15,10 +16,14 @@ const PostCard = ({ post }) => {
     console.log("handleLike() clicked! 👍🏻");
   }
 
+  const navigate = useNavigate();
+
   return (
     <div className="bg-white rounded-xl shadow p-4 spae-y-4 w-full max-w-2xl">
       {/* USER INFO. */}
-      <div className="inline-flex items-center gap-3 cursor-pointer">
+      <div
+        className="inline-flex items-center gap-3 cursor-pointer"
+        onClick={() => navigate(`/profile/${post.user._id}`)}>
         <img
           src={post.user.profile_picture}
           alt="user-profile-image"
