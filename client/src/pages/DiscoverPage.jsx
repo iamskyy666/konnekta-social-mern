@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { dummyConnectionsData } from "../assets/assets";
 import { Search } from "lucide-react";
+import UserCard from "../components/UserCard";
+import Loading from "../components/Loading";
 
 function DiscoverPage() {
   const [input, setInput] = useState("");
@@ -46,6 +48,13 @@ function DiscoverPage() {
             </div>
           </div>
         </div>
+        {/* USER-CARD */}
+        <div className="flex flex-wrap gap-6">
+          {users.map((user) => (
+            <UserCard key={user._id} user={user} />
+          ))}
+        </div>
+        {loading && <Loading height="60vh" />}
       </div>
     </div>
   );
