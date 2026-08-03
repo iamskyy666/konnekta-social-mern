@@ -4,11 +4,13 @@ import "dotenv/config";
 import connectDB from "./configs/connectDb.js";
 import { serve } from "inngest/express";
 import { inngest, functions } from "./inngest/index.js";
+import { clerkMiddleware } from "@clerk/express";
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(clerkMiddleware());
 
 app.get("/", (_, res) => {
   res.json({ message: "✅ Konnekta - Server is running!", status: 200 });
@@ -35,3 +37,5 @@ const start = async () => {
 };
 
 start();
+
+//06.30.10
