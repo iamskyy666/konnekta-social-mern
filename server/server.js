@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 import connectDB from "./configs/connectDb.js";
+import { serve } from "inngest/express";
+import { inngest, functions } from "./inngest/index.js";
 
 const app = express();
 
@@ -11,6 +13,9 @@ app.use(cors());
 app.get("/", (_, res) => {
   res.json({ message: "✅ Konnekta - Server is running!", status: 200 });
 });
+
+// inngest
+app.use("/api/inngest", serve({ client: inngest, functions }));
 
 const PORT = process.env.PORT || 4000;
 
