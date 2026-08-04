@@ -6,4 +6,5 @@ const imagekit = new ImageKit({
   urlEndPoint: process.env["IMAGEKIT_URL_ENDPOINT"],
 });
 
+
 export default imagekit;

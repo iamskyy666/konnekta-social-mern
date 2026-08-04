@@ -14,16 +14,24 @@ export const getUserData = async (req, res) => {
     }
     return res.json({ success: true, user });
   } catch (error) {
-    console.log(`🔴 ERROR:`, error);
-    return res.json({ success: false, message: error.message });
+     console.error("🔴 ERROR:", error);
+
+     return res.status(500).json({
+       success: false,
+       message: "Internal Server Error",
+     });
   }
 };
 
 //! Update User Data using userId
 export const updateUserData = async (req, res) => {
+  let profile;
+  let cover;
+
   try {
     const { userId } = await req.auth();
     let { username, bio, location, full_name } = req.body;
+
     const temp_user = await UserModel.findById(userId);
 
     // !username && (username = temp_user.username);
@@ -43,26 +51,18 @@ export const updateUserData = async (req, res) => {
 
     if (temp_user.username !== username) {
       const user = await UserModel.findOne({ username });
+
       if (user) {
         // we won't change the username if it's already taken
-        username = temp_user.username;
+        // username = temp_user.username;
+
+        // OR return a conflict response instead:
+        return res.status(409).json({
+          success: false,
+          message: "Username already exists",
+        });
       }
     }
-
-    // REFACTORED: Ensure authenticated user exists
-    if (!temp_user) {
-      return res.json({
-        success: false,
-        message: "User not found",
-      });
-    }
-
-    // const updatedUser = {
-    //   username,
-    //   bio,
-    //   location,
-    //   full_name,
-    // };
 
     const updatedUser = {
       username,
@@ -71,42 +71,20 @@ export const updateUserData = async (req, res) => {
       full_name: full_name ?? temp_user.full_name,
     };
 
-    // const profile = req.files.profile && req.files.profile[0];
-    // const cover = req.files.cover && req.files.cover[0];
+    profile = req.files?.profile?.[0];
+    cover = req.files?.cover?.[0];
 
-    const profile = req.files?.profile?.[0];
-    const cover = req.files?.cover?.[0];
-
-    // upload image online, using imagekit.
+    // upload profile image
     if (profile) {
-      // const buffer = fs.readFileSync(profile.path);
       const stream = fs.createReadStream(profile.path);
 
-      // If you have access to Node `fs` we recommend using `fs.createReadStream()`:
       const response = await imagekit.files.upload({
-        // file: buffer,
         file: stream,
         fileName: profile.originalname,
       });
 
-      // REFACTORED: Remove temporary file after successful upload
-      await fs.promises.unlink(profile.path);
-
-      //   const url = imagekit.helper.buildSrc({
-      //     path: response.filePath,
-
-      //     transformation: [
-      //       {
-      //         width: 512,
-      //         quality: "auto",
-      //         format: "webp",
-      //       },
-      //     ],
-      //   });
       const url = imagekit.helper.buildSrc({
-        // REFACTORED: Latest ImageKit SDK uses `src` instead of `path`
-        src: response.filePath,
-
+        src: response.url,
         transformation: [
           {
             width: 512,
@@ -115,41 +93,21 @@ export const updateUserData = async (req, res) => {
           },
         ],
       });
-      console.log(response.filePath);
+
       updatedUser.profile_picture = url;
     }
 
-    // upload cover-pic
+    // upload cover image
     if (cover) {
-      // const buffer = fs.readFileSync(cover.path);
       const stream = fs.createReadStream(cover.path);
 
-      // If you have access to Node `fs` we recommend using `fs.createReadStream()`:
       const response = await imagekit.files.upload({
-        // file: buffer,
         file: stream,
         fileName: cover.originalname,
       });
 
-      // REFACTORED: Remove temporary file after successful upload
-      await fs.promises.unlink(cover.path);
-
-      //   const url = imagekit.helper.buildSrc({
-      //     path: response.filePath,
-
-      //     transformation: [
-      //       {
-      //         width: 1280,
-      //         quality: "auto",
-      //         format: "webp",
-      //       },
-      //     ],
-      //   });
-
       const url = imagekit.helper.buildSrc({
-        // REFACTORED: Latest ImageKit SDK uses `src` instead of `path`
-        src: response.filePath,
-
+        src: response.url,
         transformation: [
           {
             width: 1280,
@@ -158,19 +116,36 @@ export const updateUserData = async (req, res) => {
           },
         ],
       });
-      console.log(response.filePath);
+
       updatedUser.cover_photo = url;
     }
 
     // save the updated data
     const user = await UserModel.findByIdAndUpdate(userId, updatedUser, {
-      new: true,
+      returnDocument: "after",
+      runValidators: true,
     });
 
-    res.json({ success: true, user, message: "Profile updated successfully!" });
+    return res.json({
+      success: true,
+      user,
+      message: "Profile updated successfully!",
+    });
   } catch (error) {
-    console.log(`🔴 ERROR:`, error);
-    return res.json({ success: false, message: error.message });
+    console.log("🔴 ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  } finally {
+    if (profile?.path) {
+      await fs.promises.unlink(profile.path).catch(() => {});
+    }
+
+    if (cover?.path) {
+      await fs.promises.unlink(cover.path).catch(() => {});
+    }
   }
 };
 
@@ -194,8 +169,12 @@ export const discoverUsers = async (req, res) => {
     );
     return res.json({ success: true, users: filteredUsers });
   } catch (error) {
-    console.log(`🔴 ERROR:`, error);
-    return res.json({ success: false, message: error.message });
+   console.error("🔴 ERROR:", error);
+
+   return res.status(500).json({
+     success: false,
+     message: "Internal Server Error",
+   });
   }
 };
 
@@ -206,16 +185,22 @@ export const followUser = async (req, res) => {
     const { id } = req.body;
 
     const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
 
     if (id === userId) {
-      return res.json({
+      return res.status(400).json({
         success: false,
         message: "You cannot follow yourself.",
       });
     }
 
     if (user.following.includes(id)) {
-      return res.json({
+      return res.status(400).json({
         success: false,
         message: "You are already following this user!",
       });
@@ -224,6 +209,12 @@ export const followUser = async (req, res) => {
     user.following.push(id);
 
     const toUser = await UserModel.findById(id); // other user
+    if (!toUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
     toUser.followers.push(userId);
 
     await Promise.all([user.save(), toUser.save()]);
@@ -233,8 +224,12 @@ export const followUser = async (req, res) => {
       message: "Now you're following this user!",
     });
   } catch (error) {
-    console.log(`🔴 ERROR:`, error);
-    return res.json({ success: false, message: error.message });
+    console.error("🔴 ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 };
 
@@ -245,6 +240,12 @@ export const unfollowUser = async (req, res) => {
     const { id } = req.body;
 
     const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
 
     user.following = user.following.filter(
       (followingId) => followingId.toString() !== id,
@@ -252,6 +253,12 @@ export const unfollowUser = async (req, res) => {
 
     // Other user
     const toUser = await UserModel.findById(id); // other user
+    if (!toUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
     toUser.followers = toUser.followers.filter(
       (followerId) => followerId.toString() !== userId,
     );
@@ -263,7 +270,11 @@ export const unfollowUser = async (req, res) => {
       message: "You're no longer following this user!",
     });
   } catch (error) {
-    console.log(`🔴 ERROR:`, error);
-    return res.json({ success: false, message: error.message });
+     console.error("🔴 ERROR:", error);
+
+     return res.status(500).json({
+       success: false,
+       message: "Internal Server Error",
+     });
   }
 };

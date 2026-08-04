@@ -8,11 +8,20 @@ import DiscoverPage from "./pages/DiscoverPage";
 import ProfilePage from "./pages/ProfilePage";
 import CreatePostPage from "./pages/CreatePostPage";
 import Layout from "./pages/Layout";
-import { useUser } from "@clerk/react";
+import { useAuth, useUser } from "@clerk/react";
 import { Toaster } from "react-hot-toast";
+import { useEffect } from "react";
 
 function App() {
   const { user } = useUser();
+  const { getToken } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      getToken().then((token) => console.log("token:", token));
+    }
+  }, [user]);
+
   return (
     <>
       <Toaster />
@@ -34,4 +43,4 @@ function App() {
 
 export default App;
 
-// 🕛 05:31:31 
+// 🕛 05:31:31
