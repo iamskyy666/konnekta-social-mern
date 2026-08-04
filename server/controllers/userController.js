@@ -8,7 +8,9 @@ export const getUserData = async (req, res) => {
     const { userId } = await req.auth();
     const user = await UserModel.findById(userId);
     if (!user) {
-      return res.json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
     return res.json({ success: true, user });
   } catch (error) {
@@ -25,6 +27,14 @@ export const updateUserData = async (req, res) => {
     const temp_user = await UserModel.findById(userId);
 
     // !username && (username = temp_user.username);
+
+    // REFACTORED: Ensure authenticated user exists
+    if (!temp_user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
 
     // REFACTORED: Use existing username if none was provided
     if (!username) {
@@ -47,11 +57,18 @@ export const updateUserData = async (req, res) => {
       });
     }
 
+    // const updatedUser = {
+    //   username,
+    //   bio,
+    //   location,
+    //   full_name,
+    // };
+
     const updatedUser = {
       username,
-      bio,
-      location,
-      full_name,
+      bio: bio ?? temp_user.bio,
+      location: location ?? temp_user.location,
+      full_name: full_name ?? temp_user.full_name,
     };
 
     // const profile = req.files.profile && req.files.profile[0];
@@ -172,7 +189,9 @@ export const discoverUsers = async (req, res) => {
       ],
     });
 
-    const filteredUsers = allUsers.filter((user) => user._id !== userId);
+    const filteredUsers = allUsers.filter(
+      (user) => user._id.toString() !== userId,
+    );
     return res.json({ success: true, users: filteredUsers });
   } catch (error) {
     console.log(`🔴 ERROR:`, error);
@@ -188,6 +207,13 @@ export const followUser = async (req, res) => {
 
     const user = await UserModel.findById(userId);
 
+    if (id === userId) {
+      return res.json({
+        success: false,
+        message: "You cannot follow yourself.",
+      });
+    }
+
     if (user.following.includes(id)) {
       return res.json({
         success: false,
@@ -197,12 +223,10 @@ export const followUser = async (req, res) => {
 
     user.following.push(id);
 
-    await user.save();
-
     const toUser = await UserModel.findById(id); // other user
     toUser.followers.push(userId);
 
-    await toUser.save();
+    await Promise.all([user.save(), toUser.save()]);
 
     return res.json({
       success: true,
@@ -222,14 +246,17 @@ export const unfollowUser = async (req, res) => {
 
     const user = await UserModel.findById(userId);
 
-    user.following = user.following.filter((user) => user !== id);
-
-    await user.save();
+    user.following = user.following.filter(
+      (followingId) => followingId.toString() !== id,
+    );
 
     // Other user
     const toUser = await UserModel.findById(id); // other user
-    toUser.followers = toUser.followers.filter((user) => user !== userId);
-    await toUser.save();
+    toUser.followers = toUser.followers.filter(
+      (followerId) => followerId.toString() !== userId,
+    );
+
+    await Promise.all([user.save(), toUser.save()]);
 
     return res.json({
       success: true,

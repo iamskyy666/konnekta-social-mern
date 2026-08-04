@@ -5,6 +5,7 @@ import connectDB from "./configs/connectDb.js";
 import { serve } from "inngest/express";
 import { inngest, functions } from "./inngest/index.js";
 import { clerkMiddleware } from "@clerk/express";
+import userRouter from "./routes/userRoutes.js";
 
 const app = express();
 
@@ -17,7 +18,10 @@ app.get("/", (_, res) => {
 });
 
 // inngest
-app.use("/api/inngest", serve({ client: inngest, functions }));
+app.use("/api/v1/inngest", serve({ client: inngest, functions }));
+
+// routes
+app.use("/api/v1/user", userRouter);
 
 const PORT = process.env.PORT || 4000;
 
@@ -38,4 +42,4 @@ const start = async () => {
 
 start();
 
-//06.30.10
+//07.04.10
