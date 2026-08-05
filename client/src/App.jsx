@@ -18,9 +18,9 @@ function App() {
 
   useEffect(() => {
     if (user) {
-      getToken().then((token) => console.log("token:", token));
+      getToken().then((token) => console.log(`Bearer ${token}`));
     }
-  }, [user]);
+  }, [getToken, user]);
 
   return (
     <>

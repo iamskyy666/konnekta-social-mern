@@ -10,4 +10,4 @@ const connectionSchema = new mongoose.Schema(
 );
 
 const ConnectionModel = mongoose.model("Connection", connectionSchema);
-export default connectionSchema;
+export default ConnectionModel;
