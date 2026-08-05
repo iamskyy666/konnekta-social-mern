@@ -1,4 +1,5 @@
 import imagekit from "../configs/imageKit.js";
+import ConnectionModel from "../models/connection.model.js";
 import UserModel from "../models/user.model.js";
 import fs from "fs";
 
@@ -14,12 +15,12 @@ export const getUserData = async (req, res) => {
     }
     return res.json({ success: true, user });
   } catch (error) {
-     console.error("🔴 ERROR:", error);
+    console.error("🔴 ERROR:", error);
 
-     return res.status(500).json({
-       success: false,
-       message: "Internal Server Error",
-     });
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 };
 
@@ -169,12 +170,12 @@ export const discoverUsers = async (req, res) => {
     );
     return res.json({ success: true, users: filteredUsers });
   } catch (error) {
-   console.error("🔴 ERROR:", error);
+    console.error("🔴 ERROR:", error);
 
-   return res.status(500).json({
-     success: false,
-     message: "Internal Server Error",
-   });
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 };
 
@@ -270,11 +271,87 @@ export const unfollowUser = async (req, res) => {
       message: "You're no longer following this user!",
     });
   } catch (error) {
-     console.error("🔴 ERROR:", error);
+    console.error("🔴 ERROR:", error);
 
-     return res.status(500).json({
-       success: false,
-       message: "Internal Server Error",
-     });
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+//! Send Connection Request
+export const sendConnectionReq = async (req, res) => {
+  try {
+    const { userId } = await req.auth(); // logged-in user
+    const { id } = req.body; // other user
+
+    // User can only send 20 connection reqs. in the last 24 hrs.
+    const last24Hrs = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const connectionReqs = await ConnectionModel.countDocuments({
+      from_user_id: userId,
+      createdAt: { $gt: last24Hrs },
+    });
+    if (connectionReqs >= 20) {
+      return res.status(429).json({
+        success: false,
+        message: "You've sent more than 20 requests in the last 24 hrs!",
+      });
+    }
+
+    // User cannot send request to themselves
+    if (id === userId) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot connect with yourself.",
+      });
+    }
+
+    const toUser = await UserModel.findById(id);
+
+    if (!toUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Check if users are already connected
+    const connection = await ConnectionModel.findOne({
+      $or: [
+        // if any of this is available/true
+        { from_user_id: userId, to_user_id: id },
+        { from_user_id: id, to_user_id: userId },
+      ],
+    });
+
+    if (!connection) {
+      await ConnectionModel.create({
+        from_user_id: userId,
+        to_user_id: id,
+      });
+
+      return res.status(201).json({
+        success: true,
+        message: "Connection Request sent successfully!",
+      });
+    } else if (connection.status === "accepted") {
+      return res.status(400).json({
+        success: false,
+        message: "You're already connected!",
+      });
+    }
+
+    return res.status(409).json({
+      success: false,
+      message: "Connection Request is already pending!",
+    });
+  } catch (error) {
+    console.error("🔴 ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 };

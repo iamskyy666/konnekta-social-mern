@@ -9,5 +9,14 @@ const connectionSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+// Prevent duplicate connection documents at the database level
+connectionSchema.index(
+  {
+    from_user_id: 1,
+    to_user_id: 1,
+  },
+  { unique: true },
+);
+
 const ConnectionModel = mongoose.model("Connection", connectionSchema);
 export default ConnectionModel;
