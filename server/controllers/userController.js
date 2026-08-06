@@ -355,3 +355,114 @@ export const sendConnectionReq = async (req, res) => {
     });
   }
 };
+
+//! Get User-Connections
+export const getUserConnections = async (req, res) => {
+  try {
+    const { userId } = await req.auth();
+
+    const user = await UserModel.findById(userId).populate(
+      "connections followers following",
+    );
+
+    //🔧 REFACTORED: Ensure authenticated user exists
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const { connections, followers, following } = user;
+
+    //🔧 REFACTORED: Execute query before mapping
+    const pendingRequests = await ConnectionModel.find({
+      to_user_id: userId,
+      status: "pending",
+    }).populate("from_user_id");
+
+    const pendingConnections = pendingRequests.map(
+      (connection) => connection.from_user_id,
+    );
+
+    return res.status(200).json({
+      success: true,
+      connections,
+      followers,
+      following,
+      pendingConnections,
+    });
+  } catch (error) {
+    console.error("🔴 ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+//! Accept Connection Reqs.
+export const acceptConnectionRequests = async (req, res) => {
+  try {
+    const { userId } = await req.auth();
+    const { id } = req.body;
+
+    const connection = await ConnectionModel.findOne({
+      from_user_id: id,
+      to_user_id: userId,
+      status: "pending", // prevents accepting the same request twice.
+    });
+
+    if (!connection) {
+      return res.status(404).json({
+        success: false,
+        message: "Connection not found",
+      });
+    }
+
+    const user = await UserModel.findById(userId);
+    //🔧 REFACTORED: Ensure authenticated user exists
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    //🔧 REFACTORED: Prevent duplicate connections
+    if (!user.connections.includes(id)) {
+      user.connections.push(id);
+    }
+
+    const toUser = await UserModel.findById(id);
+    //🔧 REFACTORED: Ensure authenticated user exists
+    if (!toUser) {
+      return res.status(404).json({
+        success: false,
+        message: "Target-user not found",
+      });
+    }
+
+    //🔧 REFACTORED: Prevent duplicate connections
+    if (!toUser.connections.includes(userId)) {
+      toUser.connections.push(userId);
+    }
+
+    connection.status = "accepted";
+    
+    await Promise.all([user.save(), toUser.save(), connection.save()]); // Better
+
+    return res.status(200).json({
+      success: true,
+      message: "Connection accepted successfully!",
+    });
+  } catch (error) {
+    console.error("🔴 ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
