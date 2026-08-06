@@ -16,5 +16,3 @@ const connectDB = async (url) => {
 };
 
 export default connectDB;
-
-// 05:48:00
