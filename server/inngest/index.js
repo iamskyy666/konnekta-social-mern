@@ -1,4 +1,4 @@
-import { Inngest, step } from "inngest";
+import { Inngest } from "inngest";
 import UserModel from "../models/user.model.js";
 import ConnectionModel from "../models/connection.model.js";
 import sendEmail from "../configs/nodemailer.js";
@@ -28,7 +28,9 @@ const syncUserCreation = inngest.createFunction(
     await UserModel.create({
       _id: id,
       email: email_addresses[0].email_address,
-      full_name: `${first_name} ${last_name}`,
+      //full_name: `${first_name} ${last_name}`,
+      // REFACTORED: Avoid extra spaces if first_name or last_name is missing
+      full_name: [first_name, last_name].filter(Boolean).join(" "),
       profile_picture: image_url,
       username,
     });
@@ -47,7 +49,9 @@ const syncUserUpdation = inngest.createFunction(
 
     const updateUserData = {
       email: email_addresses[0].email_address,
-      full_name: `${first_name} ${last_name}`,
+      // full_name: `${first_name} ${last_name}`,
+      // REFACTORED: Avoid extra spaces in full_name if first_name or last_name is missing
+      full_name: [first_name, last_name].filter(Boolean).join(" "),
       profile_picture: image_url,
     };
 
@@ -55,7 +59,7 @@ const syncUserUpdation = inngest.createFunction(
   },
 );
 
-//! Inngest Fucntion to delete user data from DB
+//! Inngest Function to delete user data from DB
 const syncUserDeletion = inngest.createFunction(
   {
     id: "delete-user-from-clerk",
@@ -81,6 +85,16 @@ const sendNewConnectionRequestReminder = inngest.createFunction(
         "from_user_id to_user_id",
       );
 
+      // REFACTORED: Connection may no longer exist
+      if (!connection) {
+        return { message: "Connection no longer exists." };
+      }
+
+      // REFACTORED: Check if users still exist
+      if (!connection.from_user_id || !connection.to_user_id) {
+        return { message: "User no longer exists." };
+      }
+
       const subject = `👋🏻 New Connection Request!`;
       const body = `<div style="font-family:Arial, sans-serif; padding:20px;">
       <h2>Hi ${connection.to_user_id.full_name},</h2>
@@ -101,6 +115,16 @@ const sendNewConnectionRequestReminder = inngest.createFunction(
       const connection = await ConnectionModel.findById(connectionId).populate(
         "from_user_id to_user_id",
       );
+
+      // REFACTORED: Connection may no longer exist
+      if (!connection) {
+        return { message: "Connection no longer exists." };
+      }
+
+      // REFACTORED: Check if users still exist
+      if (!connection.from_user_id || !connection.to_user_id) {
+        return { message: "User no longer exists." };
+      }
 
       if (connection.status === "accepted") {
         return { message: "Already accepted!" };
