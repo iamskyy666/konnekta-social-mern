@@ -2,23 +2,37 @@ import fs from "fs";
 import imagekit from "../configs/imageKit.js";
 import StoryModel from "../models/story.model.js";
 import UserModel from "../models/user.model.js";
+import { inngest } from "../inngest/index.js";
 
 //! Add User Story
 export const addUserStory = async (req, res) => {
+  let media;
+
   try {
-    const { userId } = await req.auth(); // Get the authenticated user's ID from Clerk
+    const { userId } = await req.auth();
     const { content, media_type, background_color } = req.body;
-    const media = req.file ? req.file.path : null; // Assuming we're using multer for file uploads
+
+    media = req.file; // Get the uploaded media file from Multer
+
     let media_url = "";
 
-    // upload media to imagekit
+    // upload media to ImageKit
     if (media_type === "image" || media_type === "video") {
+      if (!media) {
+        return res.status(400).json({
+          success: false,
+          message: "Media file is required",
+        });
+      }
+
       const stream = fs.createReadStream(media.path);
+
       const response = await imagekit.files.upload({
         file: stream,
         fileName: media.originalname,
       });
-      //🔵 also we can optimize the media using imagekit's optimization features if needed
+
+      //🔵 ImageKit upload successful
       media_url = response.url;
     }
 
@@ -30,10 +44,29 @@ export const addUserStory = async (req, res) => {
       media_type,
       background_color,
     });
-    res.status(201).json({ success: true, data: story });
+
+    //🔔 schedule story deletion after 24 hours using Inngest
+    await inngest.send({
+      name: "app/story.delete",
+      data: { storyId: story._id },
+    });
+
+    return res.status(201).json({
+      success: true,
+      data: story,
+    });
   } catch (error) {
     console.error("🔴 ERROR:", error);
-    res.status(500).json({ success: false, message: error.message });
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  } finally {
+    // 🧹 Always remove the temporary Multer file
+    if (media?.path) {
+      await fs.promises.unlink(media.path).catch(() => {});
+    }
   }
 };
 
@@ -47,7 +80,7 @@ export const getUserStories = async (req, res) => {
         .status(404)
         .json({ success: false, message: "User not found" });
     }
-    const userIds = [userId, user.connections, ...user.following]; // Get the user's connections and following users
+    const userIds = [userId, ...user.connections, ...user.following]; // Include the user's own ID, connections, and following users
     const stories = await StoryModel.find({ user: { $in: userIds } })
       .sort({ createdAt: -1 })
       .populate("user");
@@ -57,4 +90,3 @@ export const getUserStories = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-

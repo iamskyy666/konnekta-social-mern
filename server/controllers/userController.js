@@ -2,6 +2,7 @@ import imagekit from "../configs/imageKit.js";
 import ConnectionModel from "../models/connection.model.js";
 import PostModel from "../models/post.model.js";
 import UserModel from "../models/user.model.js";
+import { inngest } from "../inngest/index.js";
 import fs from "fs";
 
 //! Get User Data using userId
@@ -55,10 +56,7 @@ export const updateUserData = async (req, res) => {
       const user = await UserModel.findOne({ username });
 
       if (user) {
-        // we won't change the username if it's already taken
-        // username = temp_user.username;
-
-        // OR return a conflict response instead:
+        // return a conflict response instead:
         return res.status(409).json({
           success: false,
           message: "Username already exists",
@@ -327,9 +325,15 @@ export const sendConnectionReq = async (req, res) => {
     });
 
     if (!connection) {
-      await ConnectionModel.create({
+      const newConnection = await ConnectionModel.create({
         from_user_id: userId,
         to_user_id: id,
+      });
+
+      //🔔 Send Inngest event to send email notification and reminder
+      await inngest.send({
+        name: "app/connection.send-request",
+        data: { connectionId: newConnection._id },
       });
 
       return res.status(201).json({
@@ -472,7 +476,7 @@ export const acceptConnectionRequests = async (req, res) => {
 export const getUserProfiles = async (req, res) => {
   try {
     const { profileId } = req.body;
-    const profile = await UserModel.findById(profile);
+    const profile = await UserModel.findById(profileId);
     if (!profile) {
       return res.status(404).json({
         success: false,

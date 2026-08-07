@@ -2,6 +2,7 @@ import { Inngest } from "inngest";
 import UserModel from "../models/user.model.js";
 import ConnectionModel from "../models/connection.model.js";
 import sendEmail from "../configs/nodemailer.js";
+import StoryModel from "../models/story.model.js";
 
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "konnekta-social" });
@@ -76,7 +77,7 @@ const syncUserDeletion = inngest.createFunction(
 const sendNewConnectionRequestReminder = inngest.createFunction(
   {
     id: "send-new-connection-request-reminder",
-    triggers: [{ event: "app/connection-request" }],
+    triggers: [{ event: "app/connection.send-request" }],
   },
   async ({ event, step }) => {
     const { connectionId } = event.data;
@@ -108,7 +109,7 @@ const sendNewConnectionRequestReminder = inngest.createFunction(
       await sendEmail({ to: connection.to_user_id.email, subject, body });
     });
 
-    //! Send Email-Reminder again after 24 hrs
+    //🔔 Send Email-Reminder again after 24 hrs
     const in24Hrs = new Date(Date.now() + 24 * 60 * 60 * 1000);
     await step.sleepUntil("wait-for-24-hours", in24Hrs);
     await step.run("send-connection-request-reminder", async () => {
@@ -146,9 +147,27 @@ const sendNewConnectionRequestReminder = inngest.createFunction(
   },
 );
 
+//! Inngest function to delete a story after 24 hours of creation
+const deleteStoryAfter24Hours = inngest.createFunction(
+  {
+    id: "delete-story-after-24-hours",
+    triggers: [{ event: "app/story.delete" }],
+  },
+  async ({ event, step }) => {
+    const { storyId } = event.data;
+    const in24Hrs = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    await step.sleepUntil("wait-for-24-hours", in24Hrs);
+    await step.run("delete-story", async () => {
+      await StoryModel.findByIdAndDelete(storyId);
+      return { message: "Story deleted after 24 hours." };
+    });
+  },
+);
+
 export const functions = [
   syncUserCreation,
   syncUserUpdation,
   syncUserDeletion,
   sendNewConnectionRequestReminder,
+  deleteStoryAfter24Hours,
 ];
