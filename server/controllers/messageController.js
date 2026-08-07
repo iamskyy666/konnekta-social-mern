@@ -151,3 +151,24 @@ export const getChatMessages = async (req, res) => {
     });
   }
 };
+
+//! Get User Recent Messages
+export const getUserRecentMessages = async (req, res) => {
+  try {
+    const { userId } = await req.auth(); // Get the authenticated user's ID from Clerk
+    const messages = await MessageModel.find({ to_user_id: userId })
+      .populate("from_user_id to_user_id")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      messages,
+    });
+  } catch (error) {
+    console.error("🔴 Error in getUserRecentMessages controller:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
