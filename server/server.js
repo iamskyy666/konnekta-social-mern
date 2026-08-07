@@ -13,7 +13,7 @@ import storyRouter from "./routes/storyRoutes.js";
 const app = express();
 
 // REFACTORED: Connect to MongoDB as soon as the app initializes.
-// Your connectDB() should ideally cache the connection so repeated
+// Our connectDB() should ideally cache the connection so repeated
 // serverless invocations don't create new connections.
 await connectDB(process.env.MONGO_URI);
 
@@ -52,4 +52,4 @@ if (!process.env.VERCEL) {
 // REFACTORED: Export the Express app for Vercel Serverless Functions.
 export default app;
 
-// 08.38.00 🕛
+// 09.03.00 🕛
