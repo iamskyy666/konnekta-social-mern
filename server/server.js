@@ -9,6 +9,7 @@ import { clerkMiddleware } from "@clerk/express";
 import userRouter from "./routes/userRoutes.js";
 import postRouter from "./routes/postRoutes.js";
 import storyRouter from "./routes/storyRoutes.js";
+import messageRouter from "./routes/messageRoutes.js";
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use("/api/v1/inngest", serve({ client: inngest, functions }));
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/post", postRouter);
 app.use("/api/v1/story", storyRouter);
+app.use("/api/v1/message", messageRouter);
 
 // REFACTORED: Only start an HTTP server when running locally.
 // Vercel automatically provides the HTTP server.
