@@ -55,7 +55,7 @@ export const addPost = async (req, res) => {
 };
 
 //! Get Posts
-export const getPosts = async (req, res) => {
+export const getFeedPosts = async (req, res) => {
   try {
     const { userId } = await req.auth(); // from Clerk auth middleware
     const user = await UserModel.findById(userId);
