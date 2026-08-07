@@ -3,6 +3,7 @@ import UserModel from "../models/user.model.js";
 import ConnectionModel from "../models/connection.model.js";
 import sendEmail from "../configs/nodemailer.js";
 import StoryModel from "../models/story.model.js";
+import MessageModel from "../models/message.model.js";
 
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "konnekta-social" });
@@ -164,10 +165,67 @@ const deleteStoryAfter24Hours = inngest.createFunction(
   },
 );
 
+//! Inngest function to send notification of unseen-messages
+const sendNotificationOfUnseenMessages = inngest.createFunction(
+  {
+    id: "send-unseen-messages-notification",
+    triggers: [{ cron: "TZ=Asia/Kolkata 0 9 * * *" }], // Everyday at 9 AM automatically
+  },
+  async () => {
+    const messages = await MessageModel.find({ seen: false }).populate(
+      "to_user_id",
+    );
+    const unseenCount = {};
+
+    for (const message of messages) {
+      if (!message.to_user_id) continue;
+
+      const userId = message.to_user_id._id.toString();
+
+      unseenCount[userId] = (unseenCount[userId] || 0) + 1;
+    }
+
+    for (const userId in unseenCount) {
+      const user = await UserModel.findById(userId);
+
+      if (!user) continue;
+
+      const count = unseenCount[userId];
+      const messageWord = count === 1 ? "message" : "messages";
+
+      const subject = `✉️ You have ${count} unseen ${messageWord}`;
+
+      const body = `
+  <div style="font-family:Arial, sans-serif; padding:20px;">
+    <h2>Hi ${user.full_name},</h2>
+    <p>You have ${count} unseen ${messageWord}.</p>
+    <p>
+      Click
+      <a href="${process.env.FRONTEND_URL}/messages" style="color:#10b981;">
+        here
+      </a>
+      to view them.
+    </p>
+    <br/>
+    <p>Thanks,<br/>Konnekta - Stay "Konnekted"</p>
+  </div>
+`;
+
+      await sendEmail({
+        to: user.email,
+        subject,
+        body,
+      });
+    }
+    return { message: "Notification sent." };
+  },
+);
+
 export const functions = [
   syncUserCreation,
   syncUserUpdation,
   syncUserDeletion,
   sendNewConnectionRequestReminder,
   deleteStoryAfter24Hours,
+  sendNotificationOfUnseenMessages,
 ];
