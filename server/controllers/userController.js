@@ -1,5 +1,6 @@
 import imagekit from "../configs/imageKit.js";
 import ConnectionModel from "../models/connection.model.js";
+import PostModel from "../models/post.model.js";
 import UserModel from "../models/user.model.js";
 import fs from "fs";
 
@@ -450,12 +451,43 @@ export const acceptConnectionRequests = async (req, res) => {
     }
 
     connection.status = "accepted";
-    
+
     await Promise.all([user.save(), toUser.save(), connection.save()]); // Better
 
     return res.status(200).json({
       success: true,
       message: "Connection accepted successfully!",
+    });
+  } catch (error) {
+    console.error("🔴 ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+//! Get User Profiles
+export const getUserProfiles = async (req, res) => {
+  try {
+    const { profileId } = req.body;
+    const profile = await UserModel.findById(profile);
+    if (!profile) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const posts = await PostModel.find({ user: profileId })
+      .populate("user")
+      .lean();
+
+    return res.status(200).json({
+      success: true,
+      profile,
+      posts,
     });
   } catch (error) {
     console.error("🔴 ERROR:", error);

@@ -5,6 +5,7 @@ import {
   followUser,
   getUserConnections,
   getUserData,
+  getUserProfiles,
   sendConnectionReq,
   unfollowUser,
   updateUserData,
@@ -14,13 +15,11 @@ import { upload } from "../configs/multer.js";
 
 const userRouter = Router();
 
-//🔧 REFACTORED: Apply authentication to every route below
-userRouter.use(protectMw);
-
-userRouter.get("/data", getUserData);
+userRouter.get("/data", protectMw, getUserData);
 
 userRouter.post(
   "/update",
+  protectMw,
   upload.fields([
     { name: "profile", maxCount: 1 },
     { name: "cover", maxCount: 1 },
@@ -28,11 +27,14 @@ userRouter.post(
   updateUserData,
 );
 
-userRouter.post("/discover", discoverUsers);
-userRouter.post("/follow", followUser);
-userRouter.post("/unfollow", unfollowUser);
-userRouter.post("/connect", sendConnectionReq);
-userRouter.post("/accept", acceptConnectionRequests);
-userRouter.get("/connections", getUserConnections);
+userRouter.post("/discover", protectMw, discoverUsers);
+userRouter.post("/follow", protectMw, followUser);
+userRouter.post("/unfollow", protectMw, unfollowUser);
+userRouter.post("/connect", protectMw, sendConnectionReq);
+userRouter.post("/accept", protectMw, acceptConnectionRequests);
+userRouter.get("/connections", protectMw, getUserConnections);
+
+// Public endpoint — no authentication required
+userRouter.post("/profiles", getUserProfiles);
 
 export default userRouter;
