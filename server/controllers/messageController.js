@@ -41,13 +41,13 @@ export const sseEventController = (req, res) => {
 
 //! Send Message
 export const sendMessage = async (req, res) => {
-    let image;
+  let image;
   try {
     const { userId } = await req.auth(); // Get the authenticated user's ID from Clerk
     const { to_user_id, text } = req.body;
     image = req.file;
 
-    if (!to_user_id || (!text && !image)) { 
+    if (!to_user_id || (!text && !image)) {
       return res
         .status(400)
         .json({ error: "Recipient user ID and message are required" });
@@ -104,5 +104,50 @@ export const sendMessage = async (req, res) => {
     if (image?.path) {
       await fs.promises.unlink(image.path).catch(() => {});
     }
+  }
+};
+
+//! Get Chat Messages
+export const getChatMessages = async (req, res) => {
+  try {
+    const { userId } = await req.auth();
+    const { to_user_id } = req.body;
+
+    if (!to_user_id) {
+      return res.status(400).json({
+        success: false,
+        message: "Recipient user ID is required",
+      });
+    }
+
+    const messages = await MessageModel.find({
+      $or: [
+        { from_user_id: userId, to_user_id },
+        { from_user_id: to_user_id, to_user_id: userId },
+      ],
+    }).sort({ createdAt: 1 });
+
+    // Mark messages as seen
+    await MessageModel.updateMany(
+      {
+        from_user_id: to_user_id,
+        to_user_id: userId,
+        seen: false,
+      },
+      {
+        $set: { seen: true },
+      },
+    );
+
+    return res.status(200).json({
+      success: true,
+      messages,
+    });
+  } catch (error) {
+    console.error("🔴 Error in getChatMessages controller:", error);
+
+    return res.status(500).json({
+      error: "Internal Server Error",
+    });
   }
 };
