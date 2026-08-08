@@ -13,6 +13,7 @@ import { Toaster } from "react-hot-toast";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchUser } from "./features/user/userSlice";
+import { fetchConnections } from "./features/connections/connectionsSlice";
 
 function App() {
   const { user } = useUser();
@@ -24,6 +25,7 @@ function App() {
     const fetchData = async () => {
       const token = await getToken();
       dispatch(fetchUser(token));
+      dispatch(fetchConnections(token));
     };
     fetchData();
   }, [getToken, user, dispatch]);

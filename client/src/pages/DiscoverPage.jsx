@@ -1,24 +1,52 @@
-import { useState } from "react";
-import { dummyConnectionsData } from "../assets/assets";
+import { useEffect, useState } from "react";
+// import { dummyConnectionsData } from "../assets/assets";
 import { Search } from "lucide-react";
 import UserCard from "../components/UserCard";
 import Loading from "../components/Loading";
+import { toast } from "react-hot-toast";
+import api from "../api/axios";
+import { useAuth } from "@clerk/react";
+import { useDispatch } from "react-redux";
+import { fetchUser } from "../features/user/userSlice";
 
 function DiscoverPage() {
   const [input, setInput] = useState("");
-  const [users, setUsers] = useState(dummyConnectionsData);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const { getToken } = useAuth();
+
+  const dispatch = useDispatch();
 
   const handleSearch = async (evt) => {
     if (evt.key === "Enter") {
-      setUsers([]);
-      setLoading(true);
-      setTimeout(() => {
-        setUsers(dummyConnectionsData);
+      try {
+        setUsers([]);
+        setLoading(true);
+        const { data } = await api.post(
+          `/api/v1/user/discover`,
+          { input },
+          {
+            headers: {
+              Authorization: `Bearer ${await getToken()}`,
+            },
+          },
+        );
+
+        data.success ? setUsers(data.users) : toast.error(data.message);
         setLoading(false);
-      }, 1000);
+        setInput("");
+      } catch (error) {
+        console.log(`🔴 ERROR:`, error);
+        toast.error(error.message);
+      }
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    getToken().then((token) => dispatch(fetchUser(token)));
+  }, [dispatch, getToken]);
 
   return (
     <div className="min-h-screen bg-linear-to-b from-slate-50 to-white">

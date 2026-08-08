@@ -1,22 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import {
-  dummyConnectionsData as connections,
-  dummyFollowersData as followers,
-  dummyFollowingData as following,
-  dummyPendingConnectionsData as pendingConnections,
-} from "../assets/assets";
-import {
   MessageSquare,
   UserCheck,
   UserPlus,
   UserRoundPen,
   Users,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useAuth } from "@clerk/react";
+import { fetchConnections } from "../features/connections/connectionsSlice";
+import api from "../api/axios";
+import { toast } from "react-hot-toast";
 
 function ConnectionsPage() {
   const [currentTab, setCurrentTab] = useState("Followers");
 
+  const { connections, pendingConnections, followers, following } = useSelector(
+    (state) => state.connections,
+  ); // from redux
+  const dispatch = useDispatch();
+  const { getToken } = useAuth();
   const navigate = useNavigate();
 
   const dataArray = [
@@ -25,6 +29,59 @@ function ConnectionsPage() {
     { label: "Pending", value: pendingConnections, icon: UserRoundPen },
     { label: "Connections", value: connections, icon: UserPlus },
   ];
+
+  async function handleUnfollow(userId) {
+    try {
+      const { data } = await api.post(
+        `/api/v1/user/unfollow`,
+        { id: userId },
+        {
+          headers: {
+            Authorization: `Bearer ${await getToken()}`,
+          },
+        },
+      );
+      if (data.success) {
+        toast.success(data.message);
+        dispatch(fetchConnections(await getToken()));
+      } else {
+        toast(data.message);
+      }
+    } catch (error) {
+      console.log(`🔴 ERROR:`, error);
+      toast.error(error.message);
+    }
+  }
+
+  async function acceptConnection(userId) {
+    try {
+      const { data } = await api.post(
+        `/api/v1/user/accept`,
+        { id: userId },
+        {
+          headers: {
+            Authorization: `Bearer ${await getToken()}`,
+          },
+        },
+      );
+      if (data.success) {
+        toast.success(data.message);
+        dispatch(fetchConnections(await getToken()));
+      } else {
+        toast(data.message);
+      }
+    } catch (error) {
+      console.log(`🔴 ERROR:`, error);
+      toast.error(error.message);
+    }
+  }
+
+  useEffect(() => {
+    getToken().then((token) => {
+      dispatch(fetchConnections(token));
+    });
+  }, [dispatch, getToken]);
+
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="max-w-6xl mx-auto p-6">
@@ -95,17 +152,23 @@ function ConnectionsPage() {
                       </button>
                     }
                     {currentTab === "Following" && (
-                      <button className="w-full p-2 text-sm rounded bg-slate-100 hover:bg-slate-200 text-black active:scale-95 transition cursor-pointer">
+                      <button
+                        onClick={() => handleUnfollow(user._id)}
+                        className="w-full p-2 text-sm rounded bg-slate-100 hover:bg-slate-200 text-black active:scale-95 transition cursor-pointer">
                         Unfollow
                       </button>
                     )}
                     {currentTab === "Pending" && (
-                      <button className="w-full p-2 text-sm rounded bg-slate-100 hover:bg-slate-200 text-black active:scale-95 transition cursor-pointer">
+                      <button
+                        onClick={() => acceptConnection(user._id)}
+                        className="w-full p-2 text-sm rounded bg-slate-100 hover:bg-slate-200 text-black active:scale-95 transition cursor-pointer">
                         Accept
                       </button>
                     )}
                     {currentTab === "Connections" && (
-                      <button onClick={()=>navigate(`/messages/${user._id}`)} className="w-full p-2 text-sm rounded bg-slate-100 hover:bg-slate-200 text-black active:scale-95 transition cursor-pointer flex items-center justify-center gap-1">
+                      <button
+                        onClick={() => navigate(`/messages/${user._id}`)}
+                        className="w-full p-2 text-sm rounded bg-slate-100 hover:bg-slate-200 text-black active:scale-95 transition cursor-pointer flex items-center justify-center gap-1">
                         <MessageSquare className="w-4 h-4" />
                         Message
                       </button>
