@@ -9,10 +9,12 @@ export const fetchMessages = createAsyncThunk(
   "messages/fetchMessages",
   async ({ token, userId }) => {
     const { data } = await api.post(
-      `/api/v1/message/get`,
+      "/api/v1/message/get",
       { to_user_id: userId },
       {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
     );
 
@@ -23,18 +25,27 @@ export const fetchMessages = createAsyncThunk(
 const messagesSlice = createSlice({
   name: "messages",
   initialState,
+
   reducers: {
     setMessages: (state, action) => {
       state.messages = action.payload;
     },
 
     addMessage: (state, action) => {
-      state.messages = [...state.messages, action.payload];
+      const exists = state.messages.some(
+        (message) => message._id === action.payload._id,
+      );
+
+      if (!exists) {
+        state.messages.push(action.payload);
+      }
     },
+
     resetMessages: (state) => {
       state.messages = [];
     },
   },
+
   extraReducers: (builder) => {
     builder.addCase(fetchMessages.fulfilled, (state, action) => {
       if (action.payload) {
@@ -45,4 +56,9 @@ const messagesSlice = createSlice({
 });
 
 export default messagesSlice.reducer;
-export const { setMessages, addMessage, resetMessages } = messagesSlice.actions;
+
+export const {
+  setMessages,
+  addMessage,
+  resetMessages,
+} = messagesSlice.actions;

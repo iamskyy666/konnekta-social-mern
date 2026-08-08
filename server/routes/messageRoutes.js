@@ -9,10 +9,8 @@ import protectMw from "../middlewares/auth.js";
 
 const messageRouter = Router();
 
-messageRouter.use(protectMw); // Apply the authentication middleware to all routes in this router
-
 messageRouter.get("/:userId", sseEventController);
-messageRouter.post("/send", upload.single("image"), sendMessage);
-messageRouter.post("/get", getChatMessages);
+messageRouter.post("/send",protectMw, upload.single("image"), sendMessage);
+messageRouter.post("/get",protectMw, getChatMessages);
 
 export default messageRouter;
