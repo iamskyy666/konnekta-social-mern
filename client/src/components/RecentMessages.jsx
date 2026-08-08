@@ -1,18 +1,58 @@
 import { useEffect, useState } from "react";
-import { dummyRecentMessagesData } from "../assets/assets";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import { useAuth, useUser } from "@clerk/react";
+import api from "../api/axios";
+import { toast } from "react-hot-toast";
 
 function RecentMessages() {
+  const { user } = useUser();
+  const { getToken } = useAuth();
+
   const [messages, setMessages] = useState([]);
 
   async function fetchRecentMessages() {
-    setMessages(dummyRecentMessagesData);
+    try {
+      const token = await getToken();
+      const { data } = await api.get(`/api/v1/user/recent-messages`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (data.success) {
+        // Group messages by sender and get the latest messafe for each sender
+        const groupedMessages = data.messages.reduce((acc, message) => {
+          const senderId = message.from_user_id._id;
+          if (
+            !acc[senderId] ||
+            new Date(message.createdAt) > new Date(acc[senderId].createdAt)
+          ) {
+            acc[senderId] = message;
+          }
+          return acc;
+        }, {});
+
+        // Convert object -> array, then sort by newest first.
+        const sortedMessages = Object.values(groupedMessages).sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+        );
+        setMessages(sortedMessages);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(`🔴 ERROR:`, error);
+      toast.error(error.message);
+    }
   }
 
   useEffect(() => {
-    fetchRecentMessages();
-  }, []);
+    if (user) {
+      fetchRecentMessages();
+      setInterval(fetchRecentMessages, 30000);
+      return () => {
+        clearInterval();
+      };
+    }
+  }, [user]);
 
   return (
     <div className="bg-white max-w-xs mt-4 p-4 min-h-20 rounded-md shadow text-xs text-slate-800">
