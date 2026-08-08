@@ -9,12 +9,13 @@ import ProfilePage from "./pages/ProfilePage";
 import CreatePostPage from "./pages/CreatePostPage";
 import Layout from "./pages/Layout";
 import { useAuth, useUser } from "@clerk/react";
-import { Toaster } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { fetchUser } from "./features/user/userSlice";
 import { fetchConnections } from "./features/connections/connectionsSlice";
 import { addMessage } from "./features/messages/messagesSlice";
+import Notification from "./components/Notification";
 
 function App() {
   const { user } = useUser();
@@ -67,14 +68,14 @@ function App() {
 
         const message = JSON.parse(event.data);
 
-        if (
-          pathNameRef.current ===
-          `/messages/${message.from_user_id._id}`
-        ) {
+        if (pathNameRef.current === `/messages/${message.from_user_id._id}`) {
           dispatch(addMessage(message));
         } else {
-          // TODO: Notification component
+          // Notification component 🔔
           console.log("🔔 New message notification:", message);
+          toast.custom((t) => <Notification t={t} message={message} />, {
+            position: "bottom-right",
+          });
         }
       } catch (error) {
         console.error("🔴 Error processing SSE message:", error);
@@ -96,46 +97,22 @@ function App() {
       <Toaster />
 
       <Routes>
-        <Route
-          path="/"
-          element={!user ? <LoginPage /> : <Layout />}
-        >
+        <Route path="/" element={!user ? <LoginPage /> : <Layout />}>
           <Route index element={<FeedPage />} />
 
-          <Route
-            path="messages"
-            element={<MessagesPage />}
-          />
+          <Route path="messages" element={<MessagesPage />} />
 
-          <Route
-            path="messages/:userId"
-            element={<ChatBoxPage />}
-          />
+          <Route path="messages/:userId" element={<ChatBoxPage />} />
 
-          <Route
-            path="connections"
-            element={<ConnectionsPage />}
-          />
+          <Route path="connections" element={<ConnectionsPage />} />
 
-          <Route
-            path="discover"
-            element={<DiscoverPage />}
-          />
+          <Route path="discover" element={<DiscoverPage />} />
 
-          <Route
-            path="profile"
-            element={<ProfilePage />}
-          />
+          <Route path="profile" element={<ProfilePage />} />
 
-          <Route
-            path="profile/:profileId"
-            element={<ProfilePage />}
-          />
+          <Route path="profile/:profileId" element={<ProfilePage />} />
 
-          <Route
-            path="create-post"
-            element={<CreatePostPage />}
-          />
+          <Route path="create-post" element={<CreatePostPage />} />
         </Route>
       </Routes>
     </>
@@ -143,4 +120,3 @@ function App() {
 }
 
 export default App;
-
