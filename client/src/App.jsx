@@ -11,16 +11,22 @@ import Layout from "./pages/Layout";
 import { useAuth, useUser } from "@clerk/react";
 import { Toaster } from "react-hot-toast";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { fetchUser } from "./features/user/userSlice";
 
 function App() {
   const { user } = useUser();
   const { getToken } = useAuth();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (user) {
-      getToken().then((token) => console.log(`Bearer ${token}`));
-    }
-  }, [getToken, user]);
+    //!💡 whenever our wbepage loads..
+    const fetchData = async () => {
+      const token = await getToken();
+      dispatch(fetchUser(token));
+    };
+    fetchData();
+  }, [getToken, user, dispatch]);
 
   return (
     <>

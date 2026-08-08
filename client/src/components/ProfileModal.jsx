@@ -1,9 +1,17 @@
 import React from "react";
-import { dummyUserData } from "../assets/assets";
+// import { dummyUserData } from "../assets/assets";
 import { Pencil } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
+import { updateUser } from "../features/user/userSlice";
+import { useAuth } from "@clerk/react";
+
 
 const ProfileModal = ({ setShowEdit }) => {
-  const user = dummyUserData;
+  const user = useSelector((state) => state.user.value); // from redux
+  const dispatch = useDispatch();
+
+  const { getToken } = useAuth();
 
   const [editForm, setEditForm] = React.useState({
     username: user.username,
@@ -16,7 +24,31 @@ const ProfileModal = ({ setShowEdit }) => {
 
   async function handleSaveProfile(evt) {
     evt.preventDefault();
-    console.log(`handleSaveProfile() clicked! ✅`);
+    try {
+      const userData = new FormData();
+      const {
+        username,
+        bio,
+        location,
+        profile_picture,
+        cover_photo,
+        full_name,
+      } = editForm;
+
+      // create userData
+      userData.append("username", username);
+      userData.append("bio", bio);
+      userData.append("location", location);
+      userData.append("full_name", full_name);
+      profile_picture && userData.append("profile", profile_picture);
+      cover_photo && userData.append("cover", cover_photo);
+      const token = await getToken();
+      dispatch(updateUser({ userData, token }));
+      setShowEdit(false); // close the modal
+    } catch (error) {
+      console.log(`🔴ERROR:`, error);
+      toast.error(error.message);
+    }
   }
 
   return (
@@ -26,7 +58,12 @@ const ProfileModal = ({ setShowEdit }) => {
           <h1 className="text-2xl font-bold text-gray-900 mb-6">
             Edit Profile
           </h1>
-          <form className="space-y-4" action="" onSubmit={handleSaveProfile}>
+          <form
+            className="space-y-4"
+            action=""
+            onSubmit={(evt) =>
+              toast.promise(handleSaveProfile(evt), { loading: "Saving..." })
+            }>
             {/* Profile Picture */}
             <div className="flex flex-col items-start gap-3">
               <label

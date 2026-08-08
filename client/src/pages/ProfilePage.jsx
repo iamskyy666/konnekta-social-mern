@@ -1,29 +1,58 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { dummyPostsData, dummyUserData } from "../assets/assets";
+// import { dummyPostsData, dummyUserData } from "../assets/assets";
 import Loading from "../components/Loading";
 import UserProfileInfo from "../components/UserProfileInfo";
 import PostCard from "../components/PostCard";
 import moment from "moment";
 import ProfileModal from "../components/ProfileModal";
+import api from "../api/axios.js";
+import { toast } from "react-hot-toast";
+import { useSelector } from "react-redux";
+import { useAuth } from "@clerk/react";
 
 function ProfilePage() {
   const { profileId } = useParams();
+
+  const {getToken} = useAuth();
+
+  const currentUser = useSelector((state) => state.user.value); // from redux
 
   const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]);
   const [activeTab, setActiveTab] = useState("posts");
   const [showEdit, setShowEdit] = useState(false);
 
-  const fetchUser = async () => {
-    setUser(dummyUserData);
-    setPosts(dummyPostsData);
+  const fetchUser = async (profileId) => {
+    const token = await getToken();
+
+    try {
+      const { data } = await api.post(
+        `/api/v1/user/profiles`,
+        { profileId },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      if (data.success) {
+        setUser(data.profile);
+        setPosts(data.posts);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(`🔴ERROR: ${error}`);
+      toast.error(error.message);
+    }
   };
 
   useEffect(() => {
-    fetchUser();
-  }, []);
-
+    if (profileId) {
+      fetchUser(profileId);
+    } else if (currentUser?._id) {
+      fetchUser(currentUser._id);
+    }
+  }, [profileId, currentUser]);
   return user ? (
     <div className="relative h-full overflow-y-scroll bg-gray-50 p-6">
       <div className="max-w-3xl mx-auto">
@@ -98,7 +127,7 @@ function ProfilePage() {
         </div>
       </div>
       {/* Edit Profile Modal */}
-      {showEdit && <ProfileModal setShowEdit={setShowEdit}/>}
+      {showEdit && <ProfileModal setShowEdit={setShowEdit} />}
     </div>
   ) : (
     <Loading />

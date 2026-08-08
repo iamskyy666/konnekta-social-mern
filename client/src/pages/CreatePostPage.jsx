@@ -1,7 +1,11 @@
 import { useState } from "react";
-import { dummyUserData } from "../assets/assets";
+// import { dummyUserData } from "../assets/assets";
 import { Image, X } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { useSelector } from "react-redux";
+import { useAuth } from "@clerk/react";
+import api from "../api/axios.js";
+import { useNavigate } from "react-router-dom";
 
 const CreatePostPage = () => {
   const [content, setContent] = useState("");
@@ -9,10 +13,49 @@ const CreatePostPage = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const user = dummyUserData;
+  const user = useSelector((state) => state.user.value); // from redux
+
+  const { getToken } = useAuth();
+
+  const navigate = useNavigate();
 
   async function handleSubmit() {
-    console.log(`handleSubmit() clicked!`);
+    setLoading(true);
+
+    const postType =
+      images.length && content.trim()
+        ? "text_with_image"
+        : images.length
+          ? "image"
+          : "text";
+
+    try {
+      const formData = new FormData();
+
+      formData.append("content", content);
+      formData.append("post_type", postType);
+
+      images.forEach((image) => {
+        formData.append("images", image);
+      });
+
+      const { data } = await api.post("/api/v1/post/add", formData, {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      });
+
+      if (!data.success) {
+        throw new Error(data.message);
+      }
+
+      navigate("/");
+    } catch (error) {
+      console.log("🔴 ERROR:", error.message);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -89,13 +132,17 @@ const CreatePostPage = () => {
             />
             <button
               disabled={loading}
-              onClick={() =>
+              onClick={() => {
+                if (!images.length && !content.trim()) {
+                  return toast.error("Please add at least 1 image or text!");
+                }
+
                 toast.promise(handleSubmit(), {
-                  loading: "uploading...",
+                  loading: "Uploading...",
                   success: <p>Post Added!</p>,
                   error: <p>Could not add post!</p>,
-                })
-              }
+                });
+              }}
               className="text-sm bg-linear-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 active:scale-95 transition text-white font-medium px-8 py-2 rounded-md cursor-pointer">
               Publish Post
             </button>

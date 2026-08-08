@@ -1,8 +1,9 @@
 import { MapPin, MessageCircle, Plus, UserPlus } from "lucide-react";
-import { dummyUserData } from "../assets/assets";
+// import { dummyUserData } from "../assets/assets";
+import { useSelector } from "react-redux";
 
 function UserCard({ user }) {
-  const currentUser = dummyUserData;
+  const currentUser = useSelector((state) => state.user.value); // from redux
 
   const handleFollow = async () => {
     console.log("handleFollow() pressed!");
