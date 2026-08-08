@@ -1,318 +1,309 @@
-::: {align="center"}
-# ⚡ Konnekta
+# 🔗 Konnekta — Full-Stack Social Media Platform
 
-### The Next Generation of Social Networking
-
-**Where Connections Begin.**
-
-A full-stack social networking application built with the **MERN
-stack**, featuring authentication, posts, stories, connections,
-profiles, real-time messaging, notifications, media uploads, and a
-production deployment on Vercel.
-
-```{=html}
-<p>
-```
-`<a href="https://konnekta-social-mern.vercel.app">`{=html}
-`<img src="https://img.shields.io/badge/🚀%20Live%20Demo-Konnekta-6C4DFF?style=for-the-badge" alt="Live Demo">`{=html}
-`</a>`{=html}
-`<a href="https://github.com/iamskyy666/konnekta-social-mern">`{=html}
-`<img src="https://img.shields.io/badge/💻%20GitHub-Repository-181717?style=for-the-badge&logo=github" alt="GitHub Repository">`{=html}
-`</a>`{=html}
-```{=html}
+<p align="center">
+  <strong>A modern full-stack social media platform built with the MERN stack.</strong>
 </p>
-```
-```{=html}
-<p>
-```
-`<img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React">`{=html}
-`<img src="https://img.shields.io/badge/Node.js-22+-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js">`{=html}
-`<img src="https://img.shields.io/badge/Express-5-000000?style=flat-square&logo=express&logoColor=white" alt="Express">`{=html}
-`<img src="https://img.shields.io/badge/MongoDB-9-47A248?style=flat-square&logo=mongodb&logoColor=white" alt="MongoDB">`{=html}
-`<img src="https://img.shields.io/badge/Tailwind%20CSS-4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS">`{=html}
-`<img src="https://img.shields.io/badge/Vercel-Deployed-000000?style=flat-square&logo=vercel&logoColor=white" alt="Vercel">`{=html}
-```{=html}
+
+<p align="center">
+  Connect • Share • Discover • Chat • Stay Connected
 </p>
-```
-:::
 
-------------------------------------------------------------------------
+<p align="center">
+  <a href="https://konnekta-social-mern.vercel.app">
+    <img src="https://img.shields.io/badge/🚀_Live_Demo-Konnekta-blue?style=for-the-badge" alt="Live Demo">
+  </a>
+  <a href="https://github.com/iamskyy666/konnekta-social-mern">
+    <img src="https://img.shields.io/badge/💻_Source_Code-GitHub-black?style=for-the-badge&logo=github" alt="GitHub">
+  </a>
+</p>
 
-## 🌐 Live Application
+---
 
-**Try Konnekta live:**\
-https://konnekta-social-mern.vercel.app
+## 📌 About
 
-**Source code:**\
-https://github.com/iamskyy666/konnekta-social-mern
+**Konnekta** is a full-stack social media application built to explore and implement modern web application architecture using the **MERN stack**.
 
-> Konnekta is deployed as a separate React frontend and Express/Node.js
-> backend, with Vercel handling the production deployment.
+The application provides a complete social networking experience where users can create posts, share stories, discover other users, build connections, follow people, and communicate through real-time messaging.
 
-------------------------------------------------------------------------
+The project also implements **Server-Sent Events (SSE)** for real-time message delivery and notifications without requiring page refreshes.
 
-## 📸 Screenshots
+> 🚧 Konnekta is an ongoing learning and portfolio project, with additional improvements and features planned.
 
-### 🔐 Authentication
+---
 
-![Konnekta Login](docs/screenshots/login.png)
+## 🚀 Live Demo
 
-### 📰 Feed
+### 🌐 [Launch Konnekta](https://konnekta-social-mern.vercel.app)
 
-![Konnekta Feed](docs/screenshots/feed.png)
+The frontend and backend are deployed using **Vercel**.
 
-### ✨ Create a Story
+> **Note:** Authentication requires a valid Clerk account/sign-in.
 
-![Create Story](docs/screenshots/create-story.png)
-
-### 💬 Messages
-
-![Messages](docs/screenshots/messages.png)
-
-### 🤝 Connections
-
-![Connections](docs/screenshots/connections.png)
-
-### 🔎 Discover People
-
-![Discover People](docs/screenshots/discover.png)
-
-### 👤 Profile
-
-![Profile](docs/screenshots/profile.png)
-
-### 📝 Create Post
-
-![Create Post](docs/screenshots/create-post.png)
-
-------------------------------------------------------------------------
+---
 
 ## ✨ Features
 
-### 🔐 Authentication & User Management
+### 🔐 Authentication
 
--   Secure authentication with **Clerk**
--   Email/password authentication
--   Google authentication
--   Protected frontend routes and backend API routes
--   User profile creation and synchronization
--   Editable profile information
--   Profile and cover image uploads
+* User authentication powered by **Clerk**
+* Protected application routes
+* Protected backend API routes
+* Clerk middleware integration
+* Authenticated API requests using Clerk tokens
 
-### 📰 Social Feed
+### 👤 User Profiles
 
--   Personalized social feed
--   Create text and image posts
--   Upload multiple images per post
--   Like posts
--   View user posts and media
--   Responsive social-media style interface
+* View user profiles
+* Update profile information
+* Profile picture support
+* Cover photo support
+* User bio and location
+* Follower/following information
+* User connections
+
+### 📝 Posts
+
+* Create posts
+* Upload multiple images
+* Feed-based post display
+* Like posts
+* Image processing and optimization through ImageKit
 
 ### 📖 Stories
 
--   Create text-based stories
--   Upload photo/video stories
--   Multiple story background colors
--   Story feed with relative timestamps
+* Create stories
+* Upload story media
+* View available user stories
 
-### 🤝 Connections & Networking
+### 🤝 Connections & Social Graph
 
--   Discover other users
--   Search users by name, username, bio, or location
--   Follow / unfollow users
--   Send connection requests
--   Accept connection requests
--   View followers, following, pending requests, and connections
+* Discover users
+* Follow users
+* Unfollow users
+* Send connection requests
+* Accept connection requests
+* View connections
+* View followers
+* View following users
 
 ### 💬 Real-Time Messaging
 
--   One-to-one messaging
--   Text messages
--   Image/media messages
--   Real-time incoming messages using **Server-Sent Events (SSE)**
--   Real-time toast notifications for new messages
--   Recent messages sidebar
--   Seen/unseen message state
+* One-to-one messaging
+* Text messages
+* Image messages
+* Message history
+* Seen/unseen message state
+* Recent messages
+* Real-time delivery using **Server-Sent Events (SSE)**
 
-### 🖼️ Media Handling
+### 🔔 Real-Time Notifications
 
--   Image uploads with **Multer**
--   Cloud media storage and transformations with **ImageKit**
--   Profile images
--   Cover images
--   Post images
--   Story media
--   Chat image attachments
+When a new message arrives while the recipient is outside the corresponding chat:
 
-### ⚙️ Backend & Infrastructure
+* SSE delivers the message instantly
+* A notification is displayed using `react-hot-toast`
+* Users can directly select **Reply**
+* The notification navigates to the relevant conversation
 
--   RESTful API architecture
--   Express middleware
--   Clerk authentication middleware
--   MongoDB + Mongoose
--   Centralized route/controller structure
--   Inngest event-driven/background workflows
--   Nodemailer + Brevo SMTP integration
--   Environment-based configuration
--   Vercel serverless deployment support
+### ⚡ Modern Frontend Architecture
 
-------------------------------------------------------------------------
+* React 19
+* Vite
+* Redux Toolkit
+* React Router
+* Tailwind CSS
+* Axios
+* Reusable React components
+* Centralized Redux state management
 
-## 🛠️ Tech Stack
+### ☁️ Deployment
 
-### Frontend
+* Frontend deployed on Vercel
+* Backend deployed on Vercel
+* MongoDB Atlas database
+* Serverless-aware Express configuration
 
-  Technology            Purpose
-  --------------------- -----------------------------------------
-  **React 19**          UI development
-  **Vite 8**            Frontend tooling and development server
-  **React Router 7**    Client-side routing
-  **Redux Toolkit**     Global state management
-  **React Redux**       React bindings for Redux
-  **Tailwind CSS 4**    Styling
-  **Clerk React**       Authentication
-  **Axios**             HTTP requests
-  **Lucide React**      Icons
-  **Moment.js**         Date/time formatting
-  **React Hot Toast**   Notifications
+---
 
-### Backend
+# 🛠️ Tech Stack
 
-  Technology          Purpose
-  ------------------- -----------------------------------------
-  **Node.js**         JavaScript runtime
-  **Express 5**       REST API framework
-  **MongoDB**         Database
-  **Mongoose 9**      MongoDB ODM
-  **Clerk Express**   Backend authentication
-  **Multer**          Multipart/form-data and file uploads
-  **ImageKit**        Media storage and image transformations
-  **Inngest**         Event-driven/background workflows
-  **Nodemailer**      Email delivery
-  **Brevo SMTP**      SMTP email service
-  **CORS**            Cross-origin API access
-  **dotenv**          Environment configuration
-  **bcrypt**          Password hashing
-  **jsonwebtoken**    JWT utilities
+## Frontend
 
-### Deployment
+| Technology      | Purpose                                 |
+| --------------- | --------------------------------------- |
+| React           | UI development                          |
+| Vite            | Frontend tooling and development server |
+| React Router    | Client-side routing                     |
+| Redux Toolkit   | Global state management                 |
+| React Redux     | React/Redux integration                 |
+| Tailwind CSS    | Styling                                 |
+| Axios           | HTTP requests                           |
+| Clerk           | Authentication                          |
+| React Hot Toast | Notifications                           |
+| Lucide React    | Icons                                   |
+| Moment.js       | Date/time formatting                    |
 
--   **Vercel** --- frontend and backend deployment
--   **MongoDB** --- database
--   **Clerk** --- authentication
--   **ImageKit** --- media storage
--   **Inngest** --- background/event-driven processing
--   **Brevo SMTP** --- email delivery
+## Backend
 
-------------------------------------------------------------------------
+| Technology    | Purpose                           |
+| ------------- | --------------------------------- |
+| Node.js       | JavaScript runtime                |
+| Express       | REST API framework                |
+| MongoDB       | Database                          |
+| Mongoose      | MongoDB ODM                       |
+| Clerk Express | Authentication middleware         |
+| Multer        | File uploads                      |
+| ImageKit      | Image storage and optimization    |
+| Inngest       | Background/event-driven workflows |
+| Nodemailer    | Email handling                    |
+| Brevo SMTP    | Email delivery                    |
+| JWT           | Token-related functionality       |
 
-## 🏗️ Project Architecture
+## Infrastructure & Services
 
-``` text
+* **Vercel** — deployment
+* **MongoDB Atlas** — database hosting
+* **Clerk** — authentication
+* **ImageKit** — media storage and transformation
+* **Inngest** — event-driven/background functions
+* **Brevo SMTP** — email delivery
+
+---
+
+# 🏗️ Architecture
+
+Konnekta follows a decoupled frontend/backend architecture:
+
+```text
+                         ┌──────────────────────┐
+                         │       Browser        │
+                         │   React + Vite UI    │
+                         └──────────┬───────────┘
+                                    │
+                         REST API / SSE
+                                    │
+                                    ▼
+                         ┌──────────────────────┐
+                         │   Express Backend    │
+                         │      Node.js         │
+                         └──────────┬───────────┘
+                                    │
+                ┌───────────────────┼───────────────────┐
+                │                   │                   │
+                ▼                   ▼                   ▼
+        ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+        │  MongoDB    │     │   Clerk     │     │  ImageKit   │
+        │   Atlas     │     │    Auth     │     │    Media    │
+        └─────────────┘     └─────────────┘     └─────────────┘
+                                   
+                         ┌──────────────────────┐
+                         │      Inngest         │
+                         │ Background / Events  │
+                         └──────────────────────┘
+```
+
+---
+
+# ⚡ Real-Time Messaging Architecture
+
+One of the key parts of Konnekta is the real-time messaging system.
+
+Instead of repeatedly polling the server for new messages, the frontend establishes a persistent **Server-Sent Events connection**.
+
+```text
+User A
+  │
+  │ Send Message
+  ▼
+Express API
+  │
+  ├── Save message → MongoDB
+  │
+  └── SSE connection
+          │
+          ▼
+      User B's Browser
+          │
+          ├── Chat is open
+          │       └── Redux → addMessage()
+          │
+          └── Chat is closed
+                  └── Toast Notification
+```
+
+The frontend creates an SSE connection:
+
+```text
+GET /api/v1/message/:userId
+```
+
+When a message is created, the backend checks whether the recipient has an active SSE connection and pushes the message directly to that client.
+
+This allows messages and notifications to appear **without manually refreshing the page**.
+
+---
+
+# 📂 Project Structure
+
+The project is organized into separate frontend and backend applications:
+
+```text
 konnekta-social-mern/
 │
-├── client/                         # React + Vite frontend
+├── client/
 │   ├── src/
-│   │   ├── api/                   # Axios/API configuration
-│   │   ├── app/                   # Redux store
-│   │   ├── assets/                # Frontend assets
-│   │   ├── components/            # Reusable UI components
-│   │   ├── features/              # Redux slices/features
+│   │   ├── app/
+│   │   │   └── store.js
+│   │   │
+│   │   ├── components/
+│   │   │   ├── Notification.jsx
+│   │   │   └── ...
+│   │   │
+│   │   ├── features/
+│   │   │   ├── user/
 │   │   │   ├── connections/
-│   │   │   ├── messages/
-│   │   │   └── user/
-│   │   ├── pages/                 # Application pages
-│   │   ├── App.jsx                # Routing + SSE handling
-│   │   └── main.jsx               # Application entry point
-│   └── package.json
+│   │   │   └── messages/
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── LoginPage.jsx
+│   │   │   ├── FeedPage.jsx
+│   │   │   ├── MessagesPage.jsx
+│   │   │   ├── ChatBoxPage.jsx
+│   │   │   ├── ConnectionsPage.jsx
+│   │   │   ├── DiscoverPage.jsx
+│   │   │   ├── ProfilePage.jsx
+│   │   │   ├── CreatePostPage.jsx
+│   │   │   └── Layout.jsx
+│   │   │
+│   │   ├── api/
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── index.css
+│   │
+│   ├── package.json
+│   └── ...
 │
-├── server/                         # Node + Express backend
-│   ├── configs/                   # DB, upload and service configuration
-│   ├── controllers/               # Business logic
-│   ├── inngest/                   # Inngest functions
-│   ├── middlewares/               # Authentication and middleware
-│   ├── models/                    # Mongoose models
-│   ├── routes/                    # REST API routes
-│   ├── server.js                  # Express application
-│   └── package.json
+├── server/
+│   ├── configs/
+│   ├── controllers/
+│   ├── inngest/
+│   ├── middlewares/
+│   ├── models/
+│   ├── routes/
+│   ├── server.js
+│   ├── package.json
+│   └── ...
 │
-├── .gitignore
 └── README.md
 ```
 
-------------------------------------------------------------------------
+---
 
-## 🔄 Application Flow
+# 🔌 API Overview
 
-``` text
-┌──────────────────┐
-│   React Client   │
-│  Vite + React    │
-└────────┬─────────┘
-         │
-         │ Axios / REST API
-         ▼
-┌──────────────────┐
-│  Express Server  │
-│   Node.js API    │
-└───────┬──────────┘
-        │
-        ├──────────────► Clerk
-        │                Authentication
-        │
-        ├──────────────► MongoDB
-        │                Application Data
-        │
-        ├──────────────► ImageKit
-        │                Media Storage
-        │
-        ├──────────────► Inngest
-        │                Background Workflows
-        │
-        └──────────────► Brevo / Nodemailer
-                         Email Delivery
+## 👤 User Routes
 
-Real-time messaging:
-React Client ◄──────────── Server-Sent Events (SSE) ────────────► Express
-```
-
-------------------------------------------------------------------------
-
-## 🧭 Main Application Routes
-
-  -----------------------------------------------------------------------
-  Route                   Page                    Description
-  ----------------------- ----------------------- -----------------------
-  `/`                     Feed                    Main social feed
-
-  `/messages`             Messages                Connections and
-                                                  conversations
-
-  `/messages/:userId`     Chat                    One-to-one conversation
-
-  `/connections`          Connections             Followers, following,
-                                                  requests and
-                                                  connections
-
-  `/discover`             Discover                Search and discover
-                                                  people
-
-  `/profile`              Profile                 Current user's profile
-
-  `/profile/:profileId`   Profile                 View another user's
-                                                  profile
-
-  `/create-post`          Create Post             Publish text/image
-                                                  posts
-  -----------------------------------------------------------------------
-
-------------------------------------------------------------------------
-
-## 🔌 Backend API Overview
-
-### User
-
-``` text
+```text
 GET    /api/v1/user/data
 POST   /api/v1/user/update
 POST   /api/v1/user/discover
@@ -325,327 +316,432 @@ GET    /api/v1/user/recent-messages
 POST   /api/v1/user/profiles
 ```
 
-### Posts
+## 📝 Post Routes
 
-``` text
+```text
 POST   /api/v1/post/add
 GET    /api/v1/post/feed
 POST   /api/v1/post/like
 ```
 
-### Stories
+## 📖 Story Routes
 
-``` text
+```text
 POST   /api/v1/story/create
 GET    /api/v1/story/get
 ```
 
-### Messages
+## 💬 Message Routes
 
-``` text
-GET    /api/v1/message/:userId       # SSE stream
+```text
+GET    /api/v1/message/:userId
 POST   /api/v1/message/send
 POST   /api/v1/message/get
 ```
 
-### Inngest
+The `GET /api/v1/message/:userId` endpoint is used for the **SSE connection**.
 
-``` text
-/api/v1/inngest
+---
+
+# 🔑 Environment Variables
+
+Konnekta uses environment variables for authentication, database access, media services, email services, and deployment configuration.
+
+## Backend
+
+Create:
+
+```text
+server/.env
 ```
 
-------------------------------------------------------------------------
+```env
+# General
+PORT=
+MONGO_URI=
+FRONTEND_URL=
 
-## 🚀 Getting Started
+# Inngest
+INNGEST_EVENT_KEY=
+INNGEST_SIGNING_KEY=
 
-### 1. Clone the repository
+# Clerk
+CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
 
-``` bash
+# ImageKit
+IMAGEKIT_PUBLIC_KEY=
+IMAGEKIT_PRIVATE_KEY=
+IMAGEKIT_URL_ENDPOINT=
+
+# NodeMailer / Brevo
+SENDER_EMAIL=
+SMTP_USER=
+SMTP_PASS=
+```
+
+## Frontend
+
+Create:
+
+```text
+client/.env
+```
+
+```env
+VITE_CLERK_PUBLISHABLE_KEY=
+VITE_BASEURL=
+```
+
+### ⚠️ Security
+
+Never commit `.env` files or secret credentials to Git.
+
+Sensitive values such as:
+
+* MongoDB connection strings
+* Clerk secret keys
+* ImageKit private keys
+* Inngest signing keys
+* SMTP passwords
+
+should remain private.
+
+---
+
+# 💻 Getting Started
+
+## 1. Clone the repository
+
+```bash
 git clone https://github.com/iamskyy666/konnekta-social-mern.git
+```
+
+```bash
 cd konnekta-social-mern
 ```
 
-### 2. Install frontend dependencies
+## 2. Install frontend dependencies
 
-``` bash
+```bash
 cd client
 npm install
 ```
 
-### 3. Install backend dependencies
+## 3. Install backend dependencies
 
-``` bash
+```bash
 cd ../server
 npm install
 ```
 
-------------------------------------------------------------------------
+## 4. Configure environment variables
 
-## 🔑 Environment Variables
+Create `.env` files inside both `client` and `server` using the variables shown above.
 
-Create the required environment files locally.
+## 5. Start the backend
 
-### Frontend
+From the `server` directory:
 
-Create:
-
-``` text
-client/.env
-```
-
-``` env
-VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
-VITE_BASEURL=http://localhost:4000
-```
-
-### Backend
-
-Create:
-
-``` text
-server/.env
-```
-
-``` env
-PORT=4000
-MONGO_URI=your_mongodb_connection_string
-FRONTEND_URL=http://localhost:5173
-
-# Inngest
-INNGEST_EVENT_KEY=your_inngest_event_key
-INNGEST_SIGNING_KEY=your_inngest_signing_key
-
-# Clerk
-CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
-CLERK_SECRET_KEY=your_clerk_secret_key
-
-# ImageKit
-IMAGEKIT_PUBLIC_KEY=your_imagekit_public_key
-IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
-IMAGEKIT_URL_ENDPOINT=your_imagekit_url_endpoint
-
-# Nodemailer / Brevo
-SENDER_EMAIL=your_sender_email
-SMTP_USER=your_smtp_user
-SMTP_PASS=your_smtp_password
-```
-
-> **Important:** Never commit `.env` files, Clerk secret keys, database
-> credentials, SMTP passwords, ImageKit private keys, or other secrets
-> to GitHub.
-
-------------------------------------------------------------------------
-
-## ▶️ Run Locally
-
-Open two terminals.
-
-### Terminal 1 --- Backend
-
-``` bash
-cd server
+```bash
 npm run dev
 ```
 
-The backend runs on:
+The backend will run locally on the configured port, typically:
 
-``` text
+```text
 http://localhost:4000
 ```
 
-### Terminal 2 --- Frontend
+## 6. Start the frontend
 
-``` bash
-cd client
+From the `client` directory:
+
+```bash
 npm run dev
 ```
 
-The frontend runs on:
+Vite will normally start the frontend at:
 
-``` text
+```text
 http://localhost:5173
 ```
 
-------------------------------------------------------------------------
+---
 
-## 📦 Production Build
+# 🧪 Available Scripts
+
+## Client
+
+```bash
+npm run dev
+```
+
+Starts the Vite development server.
+
+```bash
+npm run build
+```
+
+Creates a production build.
+
+```bash
+npm run lint
+```
+
+Runs ESLint.
+
+```bash
+npm run preview
+```
+
+Previews the production build locally.
+
+## Server
+
+```bash
+npm run dev
+```
+
+Starts the backend using Nodemon.
+
+```bash
+npm start
+```
+
+Starts the backend using Node.js.
+
+---
+
+# 🔐 Authentication Flow
+
+Konnekta uses **Clerk** for authentication.
+
+The general flow is:
+
+```text
+User
+ │
+ ▼
+Clerk Authentication
+ │
+ ▼
+Clerk User Session
+ │
+ ▼
+Frontend obtains authentication token
+ │
+ ▼
+Axios API Request
+ │
+ ▼
+Authorization: Bearer <token>
+ │
+ ▼
+Clerk Express Middleware
+ │
+ ▼
+Protected Route
+ │
+ ▼
+Controller
+```
+
+Protected endpoints use authentication middleware before accessing application data.
+
+---
+
+# 🖼️ Media Upload Architecture
+
+Konnekta uses **Multer** to process uploaded files on the backend.
+
+The general flow is:
+
+```text
+React
+  │
+  │ multipart/form-data
+  ▼
+Multer
+  │
+  ▼
+Temporary File
+  │
+  ▼
+ImageKit
+  │
+  ▼
+Optimized Media URL
+  │
+  ▼
+MongoDB
+```
+
+ImageKit is used for media storage and image transformations, reducing the need to serve uploaded media directly from the application server.
+
+---
+
+# 📊 State Management
+
+Global application state is handled using **Redux Toolkit**.
+
+Current Redux slices include:
+
+```text
+user
+connections
+messages
+```
+
+The message slice supports real-time updates through:
+
+```javascript
+addMessage(message)
+```
+
+When an SSE event arrives, the message is dispatched directly into the Redux store, allowing the active chat UI to update immediately.
+
+---
+
+# 🌱 Current Status
+
+### ✅ Implemented
+
+* Authentication
+* User profiles
+* Profile editing
+* Posts
+* Post likes
+* Stories
+* Follow/unfollow
+* Connection requests
+* Connection acceptance
+* User discovery
+* Messaging
+* Image messaging
+* Message history
+* Seen/unseen messages
+* Recent messages
+* Real-time SSE messaging
+* Real-time message notifications
+* Redux state management
+* Responsive UI
+* Vercel deployment
+
+### 🚧 Planned / Future Improvements
+
+Potential future improvements include:
+
+* Improved notification center
+* Message notification persistence
+* Better conversation management
+* Online/offline user presence
+* Typing indicators
+* Message read receipts UI
+* More advanced post interactions
+* Better media previews
+* Additional performance optimizations
+* Automated testing
+* Progressive Web App support
+
+---
+
+# 🧠 What This Project Demonstrates
+
+Konnekta was built as more than a simple CRUD application.
+
+It demonstrates practical experience with:
+
+* Full-stack MERN architecture
+* REST API design
+* Authentication and authorization
+* MongoDB data modeling
+* Mongoose relationships
+* Redux Toolkit
+* React routing
+* File uploads
+* Image processing
+* Real-time communication with SSE
+* Event-driven backend workflows
+* Middleware architecture
+* API protection
+* Environment configuration
+* Production deployment
+* Serverless Express deployment
+* Debugging production deployment issues
+
+---
+
+# 🚀 Deployment
+
+The application is deployed using **Vercel**.
 
 ### Frontend
 
-``` bash
-cd client
-npm run build
+```text
+https://konnekta-social-mern.vercel.app
 ```
 
 ### Backend
 
-``` bash
-cd server
-npm start
-```
+The Express backend is configured to export the application for Vercel's serverless environment while still supporting local development with:
 
-The backend is also configured to export the Express app for Vercel's
-serverless environment.
-
-------------------------------------------------------------------------
-
-## ☁️ Deployment
-
-Konnekta is deployed using **Vercel**.
-
-The project is structured as two independently deployed applications:
-
-``` text
-GitHub Repository
-       │
-       ├── client/ ─────► Vercel ─────► React Frontend
-       │
-       └── server/ ─────► Vercel ─────► Express API
-```
-
-### Production URLs
-
-**Frontend**
-
-https://konnekta-social-mern.vercel.app
-
-**Backend health check**
-
-The backend exposes a root health-check endpoint returning:
-
-``` json
-{
-  "success": true,
-  "message": "✅ Konnekta - Server is running!"
+```javascript
+if (!process.env.VERCEL) {
+  app.listen(PORT);
 }
 ```
 
-------------------------------------------------------------------------
+This allows the same backend codebase to work both locally and in production.
 
-## 🔐 Security Notes
+---
 
-Konnekta keeps sensitive credentials in environment variables rather
-than source code.
+# 🔗 Links
 
-Authentication is handled through Clerk, while protected backend routes
-use authentication middleware before accessing user-specific resources.
-
-Examples of protected operations include:
-
--   User data
--   Profile updates
--   Connections
--   Follows
--   Posts
--   Stories
--   Messages
-
-For production deployments, all third-party credentials should be
-configured through the deployment platform's environment-variable
-settings.
-
-------------------------------------------------------------------------
-
-## 🧠 What This Project Demonstrates
-
-This project was built to practice and demonstrate practical full-stack
-engineering concepts:
-
--   Building a complete MERN application from frontend to backend
--   Designing RESTful APIs with Express
--   MongoDB data modeling with Mongoose
--   Authentication and authorization
--   Protected API routes
--   Global state management with Redux Toolkit
--   React Router-based application architecture
--   File uploads and cloud media processing
--   Real-time communication with SSE
--   Event-driven backend workflows
--   Email integration
--   Environment configuration
--   Serverless deployment with Vercel
--   Debugging production deployment issues
--   Separating frontend and backend concerns
-
-------------------------------------------------------------------------
-
-## 🧪 Development Notes
-
-The project is actively evolving. Some areas may continue to receive
-improvements as the application grows.
-
-Potential future improvements include:
-
--   More advanced notifications
--   Better message read-state synchronization
--   Pagination / infinite scrolling
--   Improved media optimization
--   More granular authorization
--   Additional social features
--   Automated testing
--   CI/CD workflows
-
-------------------------------------------------------------------------
-
-## 🤝 Contributing
-
-Contributions, suggestions, and improvements are welcome.
-
-1.  Fork the repository
-2.  Create a feature branch
-
-``` bash
-git checkout -b feature/amazing-feature
-```
-
-3.  Commit the changes
-
-``` bash
-git commit -m "feat: add amazing feature"
-```
-
-4.  Push the branch
-
-``` bash
-git push origin feature/amazing-feature
-```
-
-5.  Open a Pull Request
-
-------------------------------------------------------------------------
-
-## 📄 License
-
-This project is currently available for learning and portfolio purposes.
-
-------------------------------------------------------------------------
-
-## 👨‍💻 Author
-
-### Skyy
-
-Full-stack developer focused on building modern web applications with
-the MERN stack, Node.js, and related backend technologies.
-
-```{=html}
-<p>
-```
-`<a href="https://github.com/iamskyy666">`{=html}
-`<img src="https://img.shields.io/badge/GitHub-iamSkyy666-181717?style=for-the-badge&logo=github" alt="GitHub">`{=html}
-`</a>`{=html}
-```{=html}
+<p align="center">
+  <a href="https://konnekta-social-mern.vercel.app">
+    <img src="https://img.shields.io/badge/🚀_Live_Demo-Visit_Konnekta-blue?style=for-the-badge" alt="Live Demo">
+  </a>
+  <a href="https://github.com/iamskyy666/konnekta-social-mern">
+    <img src="https://img.shields.io/badge/💻_GitHub-Repository-black?style=for-the-badge&logo=github" alt="GitHub Repository">
+  </a>
 </p>
+
+---
+
+# 👨‍💻 Author
+
+**Skyy**
+
+Full-Stack / Junior Software Engineer in progress.
+
+Focused on:
+
+```text
+JavaScript
+TypeScript
+React
+Node.js
+Express
+MongoDB
+MERN
+Golang
 ```
 
-------------------------------------------------------------------------
+---
 
-::: {align="center"}
-### ⚡ Konnekta
+# ⭐ Support
 
-**Where Connections Begin.**
+If you find the project useful or interesting, consider giving the repository a ⭐ on GitHub.
 
-`<a href="https://konnekta-social-mern.vercel.app">`{=html}🚀 Visit
-Konnekta`</a>`{=html}   •  
-`<a href="https://github.com/iamskyy666/konnekta-social-mern">`{=html}💻
-View Source`</a>`{=html}
-:::
+It helps support the project and future development.
+
+---
+
+<p align="center">
+  Built with ❤️ while learning, debugging, breaking, and rebuilding.
+</p>
+
+<p align="center">
+  <strong>Konnekta — Connect. Share. Discover.</strong>
+</p>
