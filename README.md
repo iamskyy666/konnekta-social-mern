@@ -18,7 +18,8 @@
 </p>
 
 ---
-<img width="1915" height="1078" alt="image" src="https://github.com/user-attachments/assets/edd677d3-faf9-4522-9c3e-a653902b1a53" />
+<img width="959" height="475" alt="image" src="https://github.com/user-attachments/assets/9464b73a-fb23-4eb6-936a-0f08d801ccc5" />
+
 
 
 ---
