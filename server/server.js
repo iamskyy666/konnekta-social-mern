@@ -53,5 +53,3 @@ if (!process.env.VERCEL) {
 
 // REFACTORED: Export the Express app for Vercel Serverless Functions.
 export default app;
-
-// 09.03.00 🕛
